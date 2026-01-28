@@ -425,6 +425,17 @@ describe('seed', () => {
         });
     });
 
+    test('article_id column has NOT NULL constraint', () => { 
+      return db.query(`
+        SELECT is_nullable
+        FROM information_schema.columns
+        WHERE table_name = 'comments'
+        AND column_name = 'article_id';`
+      ).then(({ rows: [{ is_nullable }] }) => { 
+        expect(is_nullable).toBe('NO')
+      })
+    })
+
     test('article_id column references an article from the articles table', () => {
       return db.query(`
         SELECT *
