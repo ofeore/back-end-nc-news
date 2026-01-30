@@ -1,5 +1,6 @@
 const db = require("../connection");
 const format = require("pg-format");
+const createLookupObject = require("./utils/createLookupObject");
 
 const seed = ({ topicData, userData, articleData, commentData }) => {
   return db
@@ -105,15 +106,14 @@ const seed = ({ topicData, userData, articleData, commentData }) => {
 
       return db.query(articleInsertQuery);
     })
-    .then(({ rows: insertedArticles }) => {
-      const titleToId = {};
-      insertedArticles.forEach(({ article_id, title }) => {
-        titleToId[title] = article_id;
-      });
+    .then(({ rows }) => {
+      const articles = rows;
+      console.log(articles);
+      const articleLookup = createLookupObject(articles, "title", "article_id");
 
       const commentValues = commentData.map(
         ({ article_title, body, votes, author, created_at }) => [
-          titleToId[article_title],
+          articleLookup[article_title],
           body,
           votes,
           author,
@@ -122,9 +122,8 @@ const seed = ({ topicData, userData, articleData, commentData }) => {
       );
 
       const commentInsertQuery = format(
-        `INSERT INTO comments (
-      article_id, body, votes, author, created_at
-    ) VALUES %L RETURNING *;`,
+        `INSERT INTO comments (article_id, body, votes, author, created_at)
+     VALUES %L RETURNING *;`,
         commentValues,
       );
 
