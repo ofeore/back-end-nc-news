@@ -2,7 +2,7 @@ const createLookupObject = require("../createLookupObject");
 
 describe("createLookupObject()", () => {
   test("returns an empty object when given an empty array", () => {
-    expect(titleToId([])).toEqual({});
+    expect(createLookupObject([], "title", "article_id")).toEqual({});
   });
 
   test("creates a lookup object from title to article_id", () => {
@@ -12,11 +12,13 @@ describe("createLookupObject()", () => {
       { article_id: 3, title: "C" },
     ];
 
-    expect(createLookupObject(insertedArticles)).toEqual({
-      A: 1,
-      B: 2,
-      C: 3,
-    });
+    expect(createLookupObject(insertedArticles, "title", "article_id")).toEqual(
+      {
+        A: 1,
+        B: 2,
+        C: 3,
+      },
+    );
   });
 
   test("does not mutate the input array or its objects", () => {
@@ -26,7 +28,7 @@ describe("createLookupObject()", () => {
     ];
     const copy = JSON.parse(JSON.stringify(insertedArticles));
 
-    createLookupObject(insertedArticles);
+    createLookupObject(insertedArticles, "title", "article_id");
 
     expect(insertedArticles).toEqual(copy);
   });

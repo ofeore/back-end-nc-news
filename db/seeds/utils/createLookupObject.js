@@ -1,7 +1,7 @@
-function createLookupObject(insertedData, newObjKey, newObjValue) {
+function createLookupObject(data, newObjKey, newObjValue) {
   const lookup = {};
 
-  insertedData.forEach((row) => {
+  data.forEach((row) => {
     lookup[row[newObjKey]] = row[newObjValue];
   });
 
