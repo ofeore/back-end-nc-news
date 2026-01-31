@@ -28,4 +28,4 @@ SELECT DISTINCT topic FROM articles;
 SELECT * FROM articles WHERE author = 'grumpy19';
 
 \echo 'All of the comments that have more than 10 votes'
-SELECT * FROM comments WHERE votes > 10
+SELECT * FROM comments WHERE votes > 10;
