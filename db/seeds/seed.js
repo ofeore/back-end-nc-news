@@ -2,9 +2,16 @@ const db = require("../connection");
 const format = require("pg-format");
 const createLookupObject = require("./utils/createLookupObject");
 
-const seed = ({ topicData, userData, articleData, commentData }) => {
+const seed = ({
+  topicData,
+  userData,
+  articleData,
+  commentData,
+  userTopics,
+}) => {
   return db
-    .query(`DROP TABLE IF EXISTS comments;`)
+    .query(`DROP TABLE IF EXISTS user_topics;`)
+    .then(() => db.query(`DROP TABLE IF EXISTS comments;`))
     .then(() => db.query(`DROP TABLE IF EXISTS articles;`))
     .then(() => db.query(`DROP TABLE IF EXISTS users;`))
     .then(() => db.query(`DROP TABLE IF EXISTS topics;`))
@@ -50,6 +57,16 @@ const seed = ({ topicData, userData, articleData, commentData }) => {
           votes INT DEFAULT 0,
           author VARCHAR NOT NULL REFERENCES users(username),
           created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        );
+      `);
+    })
+    .then(() => {
+      return db.query(`
+        CREATE TABLE user_topics (
+          user_topic_id SERIAL PRIMARY KEY,
+          username VARCHAR NOT NULL REFERENCES users(username),
+          topic VARCHAR NOT NULL REFERENCES topics(slug),
+          UNIQUE (username, topic)
         );
       `);
     })
@@ -108,7 +125,7 @@ const seed = ({ topicData, userData, articleData, commentData }) => {
     })
     .then(({ rows }) => {
       const articles = rows;
-      console.log(articles);
+
       const articleLookup = createLookupObject(articles, "title", "article_id");
 
       const commentValues = commentData.map(
@@ -128,6 +145,19 @@ const seed = ({ topicData, userData, articleData, commentData }) => {
       );
 
       return db.query(commentInsertQuery);
+    })
+    .then(() => {
+      const userTopicValues = userTopics.map(({ username, topic }) => [
+        username,
+        topic,
+      ]);
+
+      const userTopicsInsertQuery = format(
+        `INSERT INTO user_topics (username, topic) VALUES %L RETURNING *;`,
+        userTopicValues,
+      );
+
+      return db.query(userTopicsInsertQuery);
     });
 };
 module.exports = seed;
