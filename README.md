@@ -29,3 +29,25 @@ PGDATABASE=nc_news_test
 Check your `.gitignore` includes:
 
 - `.env.*`
+
+
+Note that your file structure should look like: 
+
+```
+.
+├── __tests__/              
+├── .husky/                 
+├── controllers/            
+├── db/                     
+├── models/                 
+├── node_modules/
+├── .env.development        
+├── .env.test               
+├── .gitignore
+├── app.js                        
+├── error-handling.md  
+├── listen.js   
+├── package-lock.json   
+├── package.json   
+├── README.md
+```
