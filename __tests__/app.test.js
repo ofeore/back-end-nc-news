@@ -135,7 +135,7 @@ describe("GET /api/articles/:article_id/comments", () => {
 
   test("405: responds with Method not allowed for unsupported methods", () => {
     return request(app)
-      .post("/api/articles/1/comments")
+      .put("/api/articles/1/comments")
       .send({})
       .expect(405)
       .then(({ body }) => {
@@ -153,21 +153,51 @@ describe("GET /api/articles/:article_id/comments", () => {
   });
 });
 
-// CORE: GET /api/articles/:article_id/comments
-// Description
-// Should:
+describe("POST /api/articles/:article_id/comments", () => {
+  test("201: posts a comment to an article and responds with the posted comment", () => {
+    const newComment = { username: "butter_bridge", body: "hello world" };
 
-// be available on /api/articles/:article_id/comments.
-// get all comments for an article.
-// Responds with:
+    return request(app)
+      .post("/api/articles/1/comments")
+      .send(newComment)
+      .expect(201)
+      .then(({ body }) => {
+        expect(body.comment).toHaveProperty("comment_id");
+        expect(body.comment).toHaveProperty("author", "butter_bridge");
+        expect(body.comment).toHaveProperty("body", "hello world");
+        expect(body.comment).toHaveProperty("article_id", 1);
+        expect(body.comment).toHaveProperty("votes");
+        expect(body.comment).toHaveProperty("created_at");
+      });
+  });
 
-// an object with the key of comments and the value of an array of comments for the given article_id. Each comment should have the following properties:
-// comment_id
-// votes
-// created_at
-// author
-// body
-// article_id
-// Comments should be served with the most recent comments first.
+  test("400: bad request when missing required fields", () => {
+    return request(app)
+      .post("/api/articles/1/comments")
+      .send({ username: "butter_bridge" })
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Bad request");
+      });
+  });
 
-// Consider what errors could occur with this endpoint, and make sure to test for them.
+  test("400: bad request when article_id is invalid", () => {
+    return request(app)
+      .post("/api/articles/banana/comments")
+      .send({ username: "butter_bridge", body: "hi" })
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Bad request");
+      });
+  });
+
+  test("404: not found when article_id does not exist", () => {
+    return request(app)
+      .post("/api/articles/999999/comments")
+      .send({ username: "butter_bridge", body: "hi" })
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Not found");
+      });
+  });
+});
