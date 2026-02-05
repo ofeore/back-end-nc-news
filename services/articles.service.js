@@ -1,6 +1,7 @@
 const {
   selectArticles,
   selectArticlesById,
+  selectCommentsByArticleId,
 } = require("../models/articles.model");
 
 exports.getArticlesService = () => {
@@ -13,5 +14,14 @@ exports.getArticlesByIdService = (article_id) => {
       return Promise.reject({ status: 404, msg: "Not found" });
     }
     return rows[0];
+  });
+};
+
+exports.getCommentsByArticleIdService = (article_id) => {
+  return selectArticlesById(article_id).then((articleRows) => {
+    if (articleRows.length === 0) {
+      return Promise.reject({ status: 404, msg: "Not found" });
+    }
+    return selectCommentsByArticleId(article_id);
   });
 };
