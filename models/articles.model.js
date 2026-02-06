@@ -1,7 +1,7 @@
 const db = require("../db/connection");
 const format = require("pg-format");
 
-exports.selectArticles = (sort_by = "created_at", order = "desc") => {
+exports.selectArticles = (sort_by = "created_at", order = "desc", topic) => {
   const validSortColumns = [
     "article_id",
     "title",
@@ -22,8 +22,7 @@ exports.selectArticles = (sort_by = "created_at", order = "desc") => {
     return Promise.reject({ status: 400, msg: "Bad request" });
   }
 
-  const queryStr = format(
-    `
+  let queryStr = `
     SELECT 
       articles.author,
       articles.title,
@@ -36,19 +35,39 @@ exports.selectArticles = (sort_by = "created_at", order = "desc") => {
     FROM articles
     LEFT JOIN comments
       ON comments.article_id = articles.article_id
-    GROUP BY articles.article_id
-    ORDER BY %I %s;
-    `,
+  `;
+
+  const values = [];
+
+  if (topic) {
+    queryStr += ` WHERE articles.topic = $1`;
+    values.push(topic);
+  }
+
+  queryStr += format(
+    ` GROUP BY articles.article_id ORDER BY %I %s;`,
     sort_by,
     order,
   );
 
-  return db.query(queryStr).then(({ rows }) => rows);
+  return db.query(queryStr, values).then(({ rows }) => rows);
 };
 
 exports.selectArticlesById = (article_id) => {
   return db
-    .query(`SELECT * FROM articles WHERE article_id = $1`, [article_id])
+    .query(
+      `
+      SELECT 
+        articles.*,
+        COUNT(comments.comment_id)::INT AS comment_count
+      FROM articles
+      LEFT JOIN comments
+        ON comments.article_id = articles.article_id
+      WHERE articles.article_id = $1
+      GROUP BY articles.article_id;
+      `,
+      [article_id],
+    )
     .then(({ rows }) => rows);
 };
 

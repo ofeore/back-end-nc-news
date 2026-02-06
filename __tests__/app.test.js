@@ -65,7 +65,9 @@ describe("GET /api/articles", () => {
         });
       });
   });
+});
 
+describe("GET /api/articles (sort_by, order, topic query)", () => {
   test("200: sorts articles by votes in descending order by default", () => {
     return request(app)
       .get("/api/articles?sort_by=votes")
@@ -112,6 +114,26 @@ describe("GET /api/articles", () => {
         expect(body.msg).toBe("Bad request");
       });
   });
+
+  test("200: returns articles filtered by topic", () => {
+    return request(app)
+      .get("/api/articles?topic=mitch")
+      .expect(200)
+      .then(({ body }) => {
+        body.articles.forEach((article) => {
+          expect(article.topic).toBe("mitch");
+        });
+      });
+  });
+
+  test("404: returns not found for non-existent topic", () => {
+    return request(app)
+      .get("/api/articles?topic=banana")
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Not found");
+      });
+  });
 });
 
 describe("GET /api/users", () => {
@@ -146,6 +168,7 @@ describe("GET /api/articles/:article_id", () => {
         expect(body.article).toHaveProperty("created_at");
         expect(body.article).toHaveProperty("votes");
         expect(body.article).toHaveProperty("article_img_url");
+        expect(body.article).toHaveProperty("comment_count");
       });
   });
 });

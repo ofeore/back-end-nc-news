@@ -6,8 +6,13 @@ const {
   updateArticleVotesById,
 } = require("../models/articles.model");
 
-exports.getArticlesService = (sort_by, order) => {
-  return selectArticles(sort_by, order);
+exports.getArticlesService = (sort_by, order, topic) => {
+  return selectArticles(sort_by, order, topic).then((rows) => {
+    if (topic && rows.length === 0) {
+      return Promise.reject({ status: 404, msg: "Not found" });
+    }
+    return rows;
+  });
 };
 
 exports.getArticlesByIdService = (article_id) => {
@@ -59,4 +64,14 @@ exports.patchArticleByIdService = (article_id, increment_votes) => {
       return updatedArticle;
     },
   );
+};
+
+exports.checkExists = (table, column, value) => {
+  const queryStr = format("SELECT * FROM %I WHERE %I = $1;", table, column);
+
+  return db.query(queryStr, [value]).then(({ rows }) => {
+    if (rows.length === 0) {
+      return Promise.reject({ status: 404, msg: "Not found" });
+    }
+  });
 };
