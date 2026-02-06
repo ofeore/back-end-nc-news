@@ -201,3 +201,66 @@ describe("POST /api/articles/:article_id/comments", () => {
       });
   });
 });
+
+describe("PATCH /api/articles/:article_id", () => {
+  test("200: increments votes by inc_votes and returns updated article", () => {
+    return request(app)
+      .patch("/api/articles/1")
+      .send({ increment_votes: 1 })
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.article).toHaveProperty("article_id", 1);
+        expect(body.article).toHaveProperty("votes");
+      });
+  });
+
+  test("400: bad request when inc_votes is missing", () => {
+    return request(app)
+      .patch("/api/articles/1")
+      .send({})
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Bad request");
+      });
+  });
+
+  test("400: bad request when inc_votes is not a number", () => {
+    return request(app)
+      .patch("/api/articles/1")
+      .send({ increment_votes: "1" })
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Bad request");
+      });
+  });
+
+  test("400: bad request when article_id is invalid", () => {
+    return request(app)
+      .patch("/api/articles/banana")
+      .send({ increment_votes: 1 })
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Bad request");
+      });
+  });
+
+  test("404: not found when article_id does not exist", () => {
+    return request(app)
+      .patch("/api/articles/999999")
+      .send({ increment_votes: 1 })
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Not found");
+      });
+  });
+
+  test("405: method not allowed (e.g. PUT)", () => {
+    return request(app)
+      .put("/api/articles/1")
+      .send({})
+      .expect(405)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Method not allowed");
+      });
+  });
+});

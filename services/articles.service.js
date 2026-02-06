@@ -3,6 +3,7 @@ const {
   selectArticlesById,
   selectCommentsByArticleId,
   insertCommentByArticleId,
+  updateArticleVotesById,
 } = require("../models/articles.model");
 
 exports.getArticlesService = () => {
@@ -40,4 +41,22 @@ exports.postCommentByArticleIdService = (article_id, newComment) => {
     }
     return insertCommentByArticleId(article_id, username, body);
   });
+};
+
+exports.patchArticleByIdService = (article_id, increment_votes) => {
+  if (increment_votes === undefined) {
+    return Promise.reject({ status: 400, msg: "Bad request" });
+  }
+  if (typeof increment_votes !== "number") {
+    return Promise.reject({ status: 400, msg: "Bad request" });
+  }
+
+  return updateArticleVotesById(article_id, increment_votes).then(
+    (updatedArticle) => {
+      if (!updatedArticle) {
+        return Promise.reject({ status: 404, msg: "Not found" });
+      }
+      return updatedArticle;
+    },
+  );
 };

@@ -46,3 +46,12 @@ exports.insertCommentByArticleId = (article_id, username, body) => {
     )
     .then(({ rows }) => rows[0]);
 };
+
+exports.updateArticleVotesById = (article_id, increment_votes) => {
+  return db
+    .query(
+      ` UPDATE articles SET votes = votes + $1 WHERE article_id = $2 RETURNING *;`,
+      [increment_votes, article_id],
+    )
+    .then(({ rows }) => rows[0]);
+};
