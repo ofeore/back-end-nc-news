@@ -1,26 +1,49 @@
 const db = require("../db/connection");
+const format = require("pg-format");
 
-exports.selectArticles = () => {
-  return db
-    .query(
-      `
-      SELECT 
-        articles.author,
-        articles.title,
-        articles.article_id,
-        articles.topic,
-        articles.created_at,
-        articles.votes,
-        articles.article_img_url,
-        COUNT(comments.comment_id) AS comment_count
-      FROM articles
-      LEFT JOIN comments
-        ON comments.article_id = articles.article_id
-      GROUP BY articles.article_id
-      ORDER BY articles.created_at DESC;
+exports.selectArticles = (sort_by = "created_at", order = "desc") => {
+  const validSortColumns = [
+    "article_id",
+    "title",
+    "author",
+    "topic",
+    "created_at",
+    "votes",
+    "comment_count",
+  ];
+
+  const validOrders = ["asc", "desc"];
+
+  if (!validSortColumns.includes(sort_by)) {
+    return Promise.reject({ status: 400, msg: "Bad request" });
+  }
+
+  if (!validOrders.includes(order.toLowerCase())) {
+    return Promise.reject({ status: 400, msg: "Bad request" });
+  }
+
+  const queryStr = format(
+    `
+    SELECT 
+      articles.author,
+      articles.title,
+      articles.article_id,
+      articles.topic,
+      articles.created_at,
+      articles.votes,
+      articles.article_img_url,
+      COUNT(comments.comment_id)::INT AS comment_count
+    FROM articles
+    LEFT JOIN comments
+      ON comments.article_id = articles.article_id
+    GROUP BY articles.article_id
+    ORDER BY %I %s;
     `,
-    )
-    .then(({ rows }) => rows);
+    sort_by,
+    order,
+  );
+
+  return db.query(queryStr).then(({ rows }) => rows);
 };
 
 exports.selectArticlesById = (article_id) => {

@@ -7,7 +7,8 @@ const {
 } = require("../services/articles.service");
 
 exports.getArticles = (req, res, next) => {
-  getArticlesService()
+  const { sort_by, order } = req.query;
+  getArticlesService(sort_by, order)
     .then((articles) => {
       res.status(200).send({ articles });
     })

@@ -6,8 +6,8 @@ const {
   updateArticleVotesById,
 } = require("../models/articles.model");
 
-exports.getArticlesService = () => {
-  return selectArticles();
+exports.getArticlesService = (sort_by, order) => {
+  return selectArticles(sort_by, order);
 };
 
 exports.getArticlesByIdService = (article_id) => {
