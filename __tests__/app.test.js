@@ -264,3 +264,51 @@ describe("PATCH /api/articles/:article_id", () => {
       });
   });
 });
+
+describe("DELETE /api/comments/:comment_id", () => {
+  test("204: deletes a comment and responds with no content", () => {
+    return request(app)
+      .delete("/api/comments/1")
+      .expect(204)
+      .then(({ body }) => {
+        expect(body).toEqual({});
+      });
+  });
+
+  test("204: deletes a comment, then 404 when trying to delete it again", () => {
+    return request(app)
+      .delete("/api/comments/1")
+      .expect(204)
+      .then(() => {
+        return request(app).delete("/api/comments/1").expect(404);
+      });
+  });
+
+  test("400: bad request when comment_id is invalid", () => {
+    return request(app)
+      .delete("/api/comments/banana")
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Bad request");
+      });
+  });
+
+  test("404: not found when comment_id does not exist", () => {
+    return request(app)
+      .delete("/api/comments/999999")
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Not found");
+      });
+  });
+
+  test("405: method not allowed", () => {
+    return request(app)
+      .patch("/api/comments/1")
+      .send({})
+      .expect(405)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Method not allowed");
+      });
+  });
+});
