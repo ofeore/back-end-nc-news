@@ -217,7 +217,7 @@ Full error handling is implemented.
 
 ```
 .
-├── **tests**/
+├── __tests__/
 ├── controllers/
 ├── db/
 ├── models/
