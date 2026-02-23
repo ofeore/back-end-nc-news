@@ -1,13 +1,187 @@
-<!DOCTYPE=html>
+<!doctype html>
 <html lang="en">
-<head>
-<meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width", initial-size="1.0"/>
-<title>NC News API Documentation</title>
-</head>
-<body>
-    <h1>NC News API</h1>
-    <p>Documentation coming soon...</p>
-</body>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" href="styles.css" />
+    <title>NC News API Docs</title>
+  </head>
+  <body>
+    <div class="container">
+      <div class="header">
+        <h1>NC News API</h1>
+        <p class="small">
+          Base URL:
+          <span id="baseText">https://back-end-nc-news-71fp.onrender.com</span>
+        </p>
+        <p class="small">
+          All routes are under <b>/api</b>. Responses are JSON.
+        </p>
+      </div>
 
+      <div class="grid">
+        <div class="section">
+          <h2>Endpoints</h2>
+
+          <div class="endpoints">
+            <div class="box">
+              <div class="boxTop">
+                <span class="method get">GET</span>
+                <span class="path">/api/topics</span>
+              </div>
+              <p class="desc">Get all topics.</p>
+              <pre>
+GET https://back-end-nc-news-71fp.onrender.com/api/topics
+
+{
+  "topics": [
+    { "slug": "coding", "description": "..." }
+  ]
+}</pre
+              >
+            </div>
+
+            <div class="box">
+              <div class="boxTop">
+                <span class="method get">GET</span>
+                <span class="path">/api/articles</span>
+              </div>
+              <p class="desc">Get all articles. Query: sort_by, order, topic</p>
+              <pre>
+GET https://back-end-nc-news-71fp.onrender.com/api/articles?sort_by=created_at&order=desc
+
+{
+  "articles": [
+    {
+      "article_id": 1,
+      "title": "...",
+      "topic": "coding",
+      "author": "butter_bridge",
+      "votes": 0,
+      "comment_count": 13
+    }
+  ]
+}</pre
+              >
+            </div>
+
+            <div class="box">
+              <div class="boxTop">
+                <span class="method get">GET</span>
+                <span class="path">/api/articles/:article_id</span>
+              </div>
+              <p class="desc">Get one article (includes comment_count).</p>
+              <pre>
+GET https://back-end-nc-news-71fp.onrender.com/api/articles/1
+
+{
+  "article": {
+    "article_id": 1,
+    "title": "...",
+    "body": "...",
+    "comment_count": 13
+  }
+}</pre
+              >
+            </div>
+
+            <div class="box">
+              <div class="boxTop">
+                <span class="method patch">PATCH</span>
+                <span class="path">/api/articles/:article_id</span>
+              </div>
+              <p class="desc">Update votes on an article.</p>
+              <pre>
+PATCH https://back-end-nc-news-71fp.onrender.com/api/articles/1 
+
+{
+  "article": {
+    "article_id": 1,
+    "votes": 1
+  }
+}</pre
+              >
+            </div>
+
+            <div class="box">
+              <div class="boxTop">
+                <span class="method get">GET</span>
+                <span class="path">/api/articles/:article_id/comments</span>
+              </div>
+              <p class="desc">Get comments for an article.</p>
+              <pre>
+GET https://back-end-nc-news-71fp.onrender.com/api/articles/1/comments
+
+{
+  "comments": [
+    {
+      "comment_id": 2,
+      "author": "icellusedkars",
+      "body": "..."
+    }
+  ]
+}</pre
+              >
+            </div>
+
+            <div class="box">
+              <div class="boxTop">
+                <span class="method post">POST</span>
+                <span class="path">/api/articles/:article_id/comments</span>
+              </div>
+              <p class="desc">Post a new comment to an article.</p>
+              <pre>
+POST https://back-end-nc-news-71fp.onrender.com/api/articles/1/comments 
+
+{
+  "comment": {
+    "comment_id": 999,
+    "article_id": 1,
+    "author": "icellusedkars",
+    "body": "Nice article!"
+  }
+}</pre
+              >
+            </div>
+
+            <div class="box">
+              <div class="boxTop">
+                <span class="method delete">DELETE</span>
+                <span class="path">/api/comments/:comment_id</span>
+              </div>
+              <p class="desc">Delete a comment by id (204 No Content).</p>
+              <pre>
+DELETE https://back-end-nc-news-71fp.onrender.com/api/comments/1 
+
+HTTP 204 No Content</pre
+              >
+            </div>
+
+            <div class="box">
+              <div class="boxTop">
+                <span class="method get">GET</span>
+                <span class="path">/api/users</span>
+              </div>
+              <p class="desc">Get all users.</p>
+              <pre>
+https://back-end-nc-news-71fp.onrender.com/api/users
+
+{
+  "users": [
+    { "username": "butter_bridge", "name": "Jonny" }
+  ]
+}</pre
+              >
+            </div>
+          </div>
+
+          <div class="note">
+            <b>Errors:</b> you usually return JSON like
+            <code>{ "msg": "Bad request" }</code> or
+            <code>{ "msg": "Not found" }</code>.
+          </div>
+        </div>
+
+        
+  </body>
 </html>

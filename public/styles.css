@@ -1,0 +1,127 @@
+body {
+  margin: 0;
+  font-family: Arial, Helvetica, sans-serif;
+  background: #f2f2f2;
+  color: #222;
+}
+
+.container {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.header {
+  background: white;
+  border: 2px solid #222;
+  padding: 16px;
+}
+
+h1 {
+  margin: 0 0 8px;
+  font-size: 26px;
+}
+
+p {
+  margin: 6px 0;
+  line-height: 1.4;
+}
+
+.small {
+  font-size: 14px;
+  color: #555;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 16px;
+  margin-top: 16px;
+}
+
+.section {
+  background: white;
+  border: 2px solid #222;
+  padding: 14px;
+}
+
+.section h2 {
+  margin: 0 0 10px;
+  font-size: 18px;
+}
+
+.endpoints {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 12px;
+}
+
+@media (min-width: 700px) {
+  .endpoints {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.box {
+  border: 2px solid #222;
+  padding: 12px;
+  background: #fff;
+}
+
+.boxTop {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+}
+
+.method {
+  font-weight: bold;
+  font-size: 12px;
+  padding: 3px 7px;
+  border: 2px solid #222;
+}
+
+.get {
+  background: #dbeafe;
+}
+.post {
+  background: #dcfce7;
+}
+.patch {
+  background: #fef9c3;
+}
+.delete {
+  background: #fee2e2;
+}
+
+.path {
+  font-family: "Courier New", Courier, monospace;
+  font-size: 12px;
+  background: #eee;
+  padding: 3px 6px;
+  border: 1px solid #999;
+}
+
+.desc {
+  margin: 10px 0;
+  font-size: 14px;
+  color: #333;
+}
+
+pre {
+  margin: 0;
+  margin-top: 8px;
+  padding: 10px;
+  background: #111;
+  color: #eee;
+  overflow: auto;
+  font-size: 12px;
+}
+
+.note {
+  margin-top: 10px;
+  padding: 10px;
+  background: #fff7ed;
+  border: 2px solid #222;
+}
