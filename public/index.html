@@ -94,12 +94,9 @@ GET https://back-end-nc-news-71fp.onrender.com/api/articles/1
               <pre>
 PATCH https://back-end-nc-news-71fp.onrender.com/api/articles/1 
 
-{
-  "article": {
-    "article_id": 1,
-    "votes": 1
-  }
-}</pre
+
+ { "increment_votes": "1"  }
+</pre
               >
             </div>
 
@@ -133,14 +130,9 @@ GET https://back-end-nc-news-71fp.onrender.com/api/articles/1/comments
               <pre>
 POST https://back-end-nc-news-71fp.onrender.com/api/articles/1/comments 
 
-{
-  "comment": {
-    "comment_id": 999,
-    "article_id": 1,
-    "author": "icellusedkars",
-    "body": "Nice article!"
-  }
-}</pre
+  { username: "butter_bridge", body: "hello world" }
+  
+</pre
               >
             </div>
 
@@ -164,7 +156,7 @@ HTTP 204 No Content</pre
               </div>
               <p class="desc">Get all users.</p>
               <pre>
-https://back-end-nc-news-71fp.onrender.com/api/users
+GET https://back-end-nc-news-71fp.onrender.com/api/users
 
 {
   "users": [
