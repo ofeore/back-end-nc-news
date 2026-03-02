@@ -2,7 +2,7 @@ NC News API
 
 The API is hosted on Render:
 
-https://back-end-nc-news-71fp.onrender.com/
+https://back-end-nc-news-71fp.onrender.com/api
 
 You can visit this link in the browser to confirm the server is running.
 Endpoints follow a RESTful structure (e.g. /api, /api/articles, etc.).
